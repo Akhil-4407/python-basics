@@ -27,11 +27,11 @@ while is_on:
         food.refresh()
         current_score.score_check()
     if snake.head.xcor()>280 or snake.head.xcor() < -280 or snake.head.ycor() > 280 or snake.head.ycor() < -280:
-        current_score.game_over()
-        is_on = False
+        current_score.reset()
+        snake.reset()
     
     for i in snake.segments[1:]:
         if snake.head.distance(i) < 10:
-            is_on = False
-            current_score.game_over()
+            current_score.reset()
+            snake.reset()
 screen.exitonclick()
