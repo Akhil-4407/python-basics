@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import messagebox
 import random
 import pyperclip
+import json
 def gen_pass():
     letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
     numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
@@ -30,16 +31,42 @@ def gen_pass():
     
 
 def save():
+    new_data = {web_entry.get():{
+        "Email":email_entry.get(),
+        "Password":pass_entry.get()
+    }}
     if len(web_entry.get()) == 0 or len(pass_entry.get()) == 0: 
         messagebox.showinfo(title="Error",message="Please fill the empty fields")
     else:
-        y_n = messagebox.askokcancel(title=web_entry.get(), message=f"These are the details entered:\nEmail: {email_entry.get()} \nPassword: {pass_entry.get()}")
-        if y_n:
-            with open("./data.txt","a") as file:
-                file.write(f"{web_entry.get()} | {email_entry.get()}| {pass_entry.get()}\n")
-            web_entry.delete(0,END)
-            pass_entry.delete(0,END)
-            
+        try:
+            with open("./data.json","r") as file:
+                data= json.load(file)
+                data.update(new_data)
+        except FileNotFoundError:
+            data = new_data
+        finally:
+            with open("./data.json","w") as file:
+                json.dump(data,file,indent=4)
+                web_entry.delete(0,END)
+                pass_entry.delete(0,END)
+                
+def search():
+    if len(web_entry.get()) == 0:
+        messagebox.showinfo(title="Error",message="No details of the Website are given.")
+    else:
+        try:
+            with open("./data.json","r") as file:
+                data = json.load(file)
+        except:
+            messagebox.showinfo(title="No data saved",message="No Data File Found.")
+        else:
+            if web_entry.get() in data:
+                web_email = data[web_entry.get()]["Email"]
+                web_pass = data[web_entry.get()]["Password"]
+                messagebox.showinfo(title="Saved Data",message=f"Email: {web_email}\nPassword: {web_pass}")
+            else:
+                messagebox.showinfo(title="No Info",message="No detials present")
+
 
 window = Tk()
 window.title("Password Manager")
@@ -52,15 +79,22 @@ canvas.grid(column=1,row=0)
 
 web_label = Label(text="Website:")
 web_label.grid(column=0,row=1)
+
+
 web_entry = Entry(width=35)
-web_entry.grid(column=1,row=1,columnspan=2)
+web_entry.grid(column=1,row=1)
 web_entry.focus()
+
+
+web_search = Button(text="Search",width=21,command=search)
+web_search.grid(column=2,row=1)
+
 
 email_label = Label(text="Email/Username:")
 email_label.grid(column=0,row=2)
 
 
-email_entry = Entry(width=35)
+email_entry = Entry(width=62)
 email_entry.grid(column=1,row=2,columnspan=2)
 email_entry.insert(0,"akhil.k.hlc0008@gmail.com")
 
@@ -68,10 +102,10 @@ email_entry.insert(0,"akhil.k.hlc0008@gmail.com")
 pass_label = Label(text="Password:")
 pass_label.grid(column=0,row=3)
 
-pass_entry = Entry(width=21)
+pass_entry = Entry(width=35)
 pass_entry.grid(column=1,row=3)
 
-gen_button = Button(text="Generate Password",command=gen_pass)
+gen_button = Button(text="Generate Password",command=gen_pass,width=21)
 gen_button.grid(column=2,row=3)
 
 add_button = Button(text="Add",width=36,command=save)
