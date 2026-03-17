@@ -1,0 +1,10 @@
+[project]
+name = "bootcamp"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "pandas>=3.0.1",
+    "pillow>=12.1.1",
+    "pyperclip>=1.11.0",
+    "python-dotenv>=1.2.2",
+]
