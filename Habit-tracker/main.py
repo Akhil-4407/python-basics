@@ -26,19 +26,19 @@ graph_config = {
 }
 # responce = requests.post(url=graph_endpt,json=graph_config,headers=headers)
 # print(responce.text)
-today = datetime(year=2026,month=3,day=30)
+today = datetime.now()
 pixel_key = f"{api_endpt}/{USER_NAME}/graphs/graph1"
 pixel_config ={
     "date":today.strftime("%Y%m%d"),
-    "quantity":"1",
+    "quantity":input("..."),
 }
-# responce = requests.post(url=pixel_key,json=pixel_config,headers=headers)
-# print(responce.text)
+responce = requests.post(url=pixel_key,json=pixel_config,headers=headers)
+print(responce.text)
 
 
 update_key = f"{api_endpt}/{USER_NAME}/graphs/graph1/{today.strftime('%Y%m%d')}"
 update_config = {
     "quantity": "4"
 }
-responce = requests.put(url=update_key,json=update_config,headers=headers)
-print(responce.text)
+# responce = requests.put(url=update_key,json=update_config,headers=headers)
+# print(responce.text)
